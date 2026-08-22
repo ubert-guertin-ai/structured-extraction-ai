@@ -8,6 +8,7 @@ client = Groq(
 chat_completion = client.chat.completions.create(
     model="openai/gpt-oss-20b",
     messages=[{"role": "user", "content": "What is the color of apple ?"}],
+    temperature=1,
 )
 
 print(chat_completion.choices[0].message.content)
