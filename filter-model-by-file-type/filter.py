@@ -3,7 +3,7 @@ import magic
 ai_models = {
     "audio": "whisper-large-v3",
     "image": "qwen/qwen3.6-27b",
-    "text": "openai/gpt-oss-120b",
+    "text": "openai/gpt-oss-20b",
 }
 
 
