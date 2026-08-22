@@ -25,7 +25,7 @@ def get_prompt(msg):
 
         [JSON STRUCTURE]
         {
-        "names": "The person name's (Type string or null if not found)",
+        "name": "The person name's (Type string or null if not found)",
         "age": "The person age's (Type number or null if not found)"
         }
 
@@ -89,22 +89,26 @@ def ask_ai(msg):
     return chat_completion.choices[0].message.content
 
 
-text = "My name is Paul, and I'm 40 years old"
-running = True
-prompt = get_prompt(text)
-json_output = "{}"
+def extract_json(text):
+    running = True
+    prompt = get_prompt(text)
+    json_output = "{}"
 
-while running:
-    try:
-        json_output = ask_ai(prompt)
+    while running:
+        try:
+            json_output = ask_ai(prompt)
 
-        if json_output is None:
-            raise Exception("Result is None!")
+            if json_output is None:
+                raise Exception("Result is None!")
 
-        person = Person.model_validate_json(json_output)
-        print(person)
+            person = Person.model_validate_json(json_output)
+            running = False
+            return person.model_dump_json()
+        except pydantic_core._pydantic_core.ValidationError as err:
+            print("Error in the JSON format of the LLM output ! Trying again...")
+            print(err, json_output)
+            prompt = get_debug_prompt(err, json_output, text)
 
-        running = False
-    except pydantic_core._pydantic_core.ValidationError as err:
-        print("Error in the JSON format of the LLM output ! Trying again...")
-        prompt = get_debug_prompt(err, json_output, text)
+
+if __name__ == "__main__":
+    extract_json("My name is ubert and im 14 years old")
