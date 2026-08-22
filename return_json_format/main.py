@@ -5,8 +5,8 @@ import pydantic_core
 
 
 class Person(BaseModel):
-    name: str
-    age: PositiveInt
+    name: str | None = None
+    age: PositiveInt | None = None
 
 
 client = Groq(
@@ -60,7 +60,7 @@ def get_debug_prompt(error_msg, wrong_json, text):
 
         [MISSION]
         Read the text in "[TEXT]" section. 
-        Read the text in the "[WRONG JSON]", the wrong syntax.
+        Read the text inAttend. Envoit moi en 1. Je vais t'nvoyer un screenshot du résultat  the "[WRONG JSON]", the wrong syntax.
         Read the text in "[ERROR]" section, the message who explain how to fix the syntax error.
 
         [THE CORRECT JSON STRUCTURE]
@@ -111,4 +111,4 @@ def extract_json(text):
 
 
 if __name__ == "__main__":
-    extract_json("My name is ubert and im 14 years old")
+    print(extract_json("My name is Jack and Im 10 years old!"))
