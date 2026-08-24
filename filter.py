@@ -20,7 +20,3 @@ def choice_model(path, models):
     print(f"Using {model}...")
 
     return model
-
-
-file_path = input("file path: ")
-model = choice_model(file_path, ai_models)

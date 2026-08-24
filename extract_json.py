@@ -108,7 +108,3 @@ def extract_json(text):
             print("Error in the JSON format of the LLM output ! Trying again...")
             print(err, json_output)
             prompt = get_debug_prompt(err, json_output, text)
-
-
-if __name__ == "__main__":
-    print(extract_json("My name is Jack and Im 10 years old!"))
