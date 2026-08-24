@@ -21,7 +21,12 @@ if __name__ == "__main__":
     }
     ```""")
 
-    path = input("Enter path of the file: ")
+    try:
+        path = input("Enter path of the file: ")
+    except KeyboardInterrupt:
+        print("\nBye!")
+        exit()
+
     file_type = get_input_type(path=path)
 
     match file_type:

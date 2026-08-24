@@ -19,7 +19,7 @@ class TextExtractor(Extractor):
 
         return chat_completion.choices[0].message.content
 
-    def extract_json(self, text: str) -> pydantic.JsonValue:
+    def extract_json(self, text: str, max_retry=3) -> pydantic.JsonValue:
         running = True
         prompt = self._make_prompt(
             role="You are an expert in text analysis.",
@@ -39,19 +39,35 @@ class TextExtractor(Extractor):
         )
 
         json_output = "{}"
+        i = 0
 
         while running:
             try:
+                print("\033[92mExtracting data to json format...\033[0m")
                 json_output = self._ask_ai(prompt)
 
                 if json_output is None:
-                    raise Exception("Result is None!")
+                    print("\033[91mError033[0m")
+                    return
+
+                print("\033[92mVerrifying json syntax...\033[0m")
 
                 person = Person.model_validate_json(json_output)
+
+                print("\033[92mPerfect!\033[0m")
+
                 running = False
                 return person.model_dump_json()
+
             except pydantic_core._pydantic_core.ValidationError as err:
-                print("Error in the JSON format of the LLM output ! Trying again...")
+                i += 1
+
+                if i > max_retry:
+                    print("\033[91mToo many trying, stopping...\033[0m")
+                    return
+                print(
+                    f"\033[91mError in the JSON format of the LLM output. Trying again... ({i}/{max_retry}) \033[91m"
+                )
 
                 prompt = self._make_prompt(
                     role="You are an expert in JSON syntax.",

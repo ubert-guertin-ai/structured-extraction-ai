@@ -23,5 +23,5 @@ class Extractor(ABC):
         pass
 
     @abstractmethod
-    def extract_json(self, text: str) -> pydantic.JsonValue:
+    def extract_json(self, text: str, max_retry: int = 3) -> pydantic.JsonValue:
         pass
