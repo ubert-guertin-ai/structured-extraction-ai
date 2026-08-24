@@ -1,22 +1,20 @@
 import magic
-
-ai_models = {
-    "audio": "whisper-large-v3",
-    "image": "qwen/qwen3.6-27b",
-    "text": "openai/gpt-oss-20b",
-}
+from enum import Enum, auto
 
 
-def choice_model(path, models):
+class InputType(Enum):
+    TEXT = auto()
+    AUDIO = auto()
+    IMAGE = auto()
+
+
+def get_input_type(path) -> InputType | None:
     mime_type = magic.from_file(path, mime=True)
-    file_type = mime_type.split("/")[0]
+    file_type = mime_type.split("/")[0].upper()
 
-    model = models.get(file_type)
+    try:
+        input_type = InputType[file_type]
+    except KeyError:
+        return None
 
-    if model is None:
-        raise ValueError("File type is'nt supported!")
-
-    print(file_type, "detected!")
-    print(f"Using {model}...")
-
-    return model
+    return input_type
