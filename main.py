@@ -1,8 +1,8 @@
 from audioExtractor import AudioExtractor
 from filter import InputType, get_input_type
+from imageExtractor import ImageExtractor
 from textExtractor import TextExtractor
-import textExtractor
-
+import base64
 
 if __name__ == "__main__":
     print("""LLM information extraction\n
@@ -34,13 +34,21 @@ if __name__ == "__main__":
     match file_type:
         case InputType.AUDIO:
             with open(path, "rb") as file:
+                filename = path.split("/")[-1]
                 binary_data = file.read()
-                transcription_json = AudioExtractor().extract_json(binary_data)
-                exit()
-                json = TextExtractor().extract_json(transcription_json)
-            print("Audio")
+                transcription_json = AudioExtractor(filename).extract_value(binary_data)
+                json = TextExtractor().extract_value(str(transcription_json))
+                print(json)
         case InputType.IMAGE:
-            print("Image")
+            with open(path, "rb") as image_file:
+                file_extension = path.split("/")[-1].split(".")[-1]
+                binary_data = base64.b64encode(image_file.read()).decode("utf-8")
+                transcription_json = ImageExtractor(file_extension).extract_value(
+                    binary_data
+                )
+                json = TextExtractor().extract_value(str(transcription_json))
+                print(json)
+
         case InputType.TEXT:
             text = ""
 
@@ -48,6 +56,6 @@ if __name__ == "__main__":
                 for line in f:
                     text += line + "\n"
 
-            json = TextExtractor().extract_json(text)
+            json = TextExtractor().extract_value(text)
 
             print(json)

@@ -16,7 +16,7 @@ class TextExtractor(Extractor):
 
         return chat_completion.choices[0].message.content
 
-    def extract_json(self, input: str | bytes, max_retry=3) -> pydantic.JsonValue:
+    def extract_value(self, input: str | bytes, max_retry=3) -> pydantic.JsonValue:
         running = True
         prompt = self._make_prompt(
             role="You are an expert in text analysis.",
