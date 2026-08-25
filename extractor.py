@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import os
+from typing import BinaryIO
 from groq import Groq
 import pydantic
 
@@ -23,5 +24,7 @@ class Extractor(ABC):
         pass
 
     @abstractmethod
-    def extract_json(self, text: str, max_retry: int = 3) -> pydantic.JsonValue:
+    def extract_json(
+        self, input: str | bytes, max_retry: int = 3
+    ) -> pydantic.JsonValue:
         pass

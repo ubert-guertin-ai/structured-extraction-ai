@@ -1,5 +1,7 @@
+from audioExtractor import AudioExtractor
 from filter import InputType, get_input_type
 from textExtractor import TextExtractor
+import textExtractor
 
 
 if __name__ == "__main__":
@@ -31,8 +33,21 @@ if __name__ == "__main__":
 
     match file_type:
         case InputType.AUDIO:
+            with open(path, "rb") as file:
+                binary_data = file.read()
+                transcription_json = AudioExtractor().extract_json(binary_data)
+                exit()
+                json = TextExtractor().extract_json(transcription_json)
             print("Audio")
         case InputType.IMAGE:
             print("Image")
         case InputType.TEXT:
-            print(open(path, "r+"))
+            text = ""
+
+            with open(path, "r+") as f:
+                for line in f:
+                    text += line + "\n"
+
+            json = TextExtractor().extract_json(text)
+
+            print(json)

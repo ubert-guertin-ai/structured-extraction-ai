@@ -6,9 +6,6 @@ from person import Person
 
 
 class TextExtractor(Extractor):
-    def __init__(self) -> None:
-        super().__init__()
-
     def _ask_ai(self, content: str) -> str | None:
         chat_completion = self.client.chat.completions.create(
             model="openai/gpt-oss-20b",
@@ -19,7 +16,7 @@ class TextExtractor(Extractor):
 
         return chat_completion.choices[0].message.content
 
-    def extract_json(self, text: str, max_retry=3) -> pydantic.JsonValue:
+    def extract_json(self, input: str | bytes, max_retry=3) -> pydantic.JsonValue:
         running = True
         prompt = self._make_prompt(
             role="You are an expert in text analysis.",
@@ -35,7 +32,7 @@ class TextExtractor(Extractor):
                 Your response must begin with '{" and end with "}'
                 If you cannot find name or age, enter "null" value         
             """,
-            text=text,
+            text=input,
         )
 
         json_output = "{}"
